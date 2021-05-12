@@ -10,4 +10,9 @@ public class HelloController {
     public String welcomeMessage(){
         return "Hello World";
     }
+
+    @GetMapping("/math/pi")
+    public String getMathPIValue(){
+        return "3.141592653589793";
+    }
 }
