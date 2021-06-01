@@ -1,6 +1,7 @@
 package com.cognizant.springplayground;
 
 import com.fasterxml.jackson.annotation.*;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -10,6 +11,7 @@ import java.time.Instant;
 import java.util.*;
 
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
+import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 @RestController
 @RequestMapping("/flights")
@@ -57,6 +59,30 @@ public class FlightServiceJson {
         return Arrays.asList(f1,f2);
     }
 
+    @RequestMapping(value = "/tickets/total",method = POST)
+    public TotalCost getTicketTotal(@RequestBody Flight ticketInfo){
+        TotalCost c = new TotalCost();
+        int cost = 0;
+        System.out.println("ticket array " +ticketInfo.tickets.size());
+        for (Ticket t : ticketInfo.tickets) {
+            cost += t.price;
+        }
+        c.setResult(cost);
+        return c;
+    }
+
+    static class TotalCost {
+        public int getResult() {
+            return result;
+        }
+
+        public void setResult(int result) {
+            this.result = result;
+        }
+
+        int result;
+
+    }
     static class Flight{
         public Date getDepartDate() {
             return departDate;
