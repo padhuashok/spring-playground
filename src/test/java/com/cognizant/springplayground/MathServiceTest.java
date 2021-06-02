@@ -3,6 +3,7 @@ package com.cognizant.springplayground;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.RequestBuilder;
@@ -103,5 +104,25 @@ public class MathServiceTest {
 
         this.mvc.perform(rq).
                 andExpect(status().isOk()).andExpect(content().string("No values found"));
+    }
+
+    @Test
+    public void testVolumeFunction() throws Exception{
+        RequestBuilder rq = MockMvcRequestBuilders.post(String.format("/math/volume/%d/%d/%d", 6,7,8));
+        this.mvc.perform(rq).
+                andExpect(status().isOk()).
+                andExpect(content().string("336"));
+
+        RequestBuilder rq1 = MockMvcRequestBuilders.get(String.format("/math/volume/%d/%d/%d", 6,7,8));
+        this.mvc.perform(rq1).andExpect(status().isOk()).andExpect(content().string("336"));
+
+        RequestBuilder rq2 = MockMvcRequestBuilders.put(String.format("/math/volume/%d/%d/%d", 6,7,8));
+        this.mvc.perform(rq2).andExpect(status().isOk()).andExpect(content().string("336"));
+
+        RequestBuilder rq3 = MockMvcRequestBuilders.patch(String.format("/math/volume/%d/%d/%d", 6,7,8));
+        this.mvc.perform(rq3).andExpect(status().isOk()).andExpect(content().string("336"));
+
+        RequestBuilder rq4 = MockMvcRequestBuilders.delete(String.format("/math/volume/%d/%d/%d", 6,7,8));
+        this.mvc.perform(rq1).andExpect(status().isOk()).andExpect(content().string("336"));
     }
 }
