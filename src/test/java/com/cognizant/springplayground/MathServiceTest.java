@@ -12,6 +12,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -80,7 +81,7 @@ public class MathServiceTest {
 
     @Test
     public void testSumOfNumbers() throws Exception {
-        RequestBuilder rq = MockMvcRequestBuilders.post("/math/sum").
+        RequestBuilder rq = post("/math/sum").
                 queryParam("n", "1", "2", "3", "4").
                 accept(MediaType.TEXT_PLAIN);
 
@@ -90,7 +91,7 @@ public class MathServiceTest {
 
     @Test
     public void testSingleNumbers() throws Exception {
-        RequestBuilder rq = MockMvcRequestBuilders.post("/math/sum").
+        RequestBuilder rq = post("/math/sum").
                 accept(MediaType.TEXT_PLAIN).
                 queryParam("n", "1");
 
@@ -99,7 +100,7 @@ public class MathServiceTest {
 
     @Test
     public void testEmptyNumbers() throws Exception {
-        RequestBuilder rq = MockMvcRequestBuilders.post("/math/sum").
+        RequestBuilder rq = post("/math/sum").
                 accept(MediaType.TEXT_PLAIN);
 
         this.mvc.perform(rq).
@@ -108,7 +109,7 @@ public class MathServiceTest {
 
     @Test
     public void testVolumeFunction() throws Exception{
-        RequestBuilder rq = MockMvcRequestBuilders.post(String.format("/math/volume/%d/%d/%d", 6,7,8));
+        RequestBuilder rq = post(String.format("/math/volume/%d/%d/%d", 6,7,8));
         this.mvc.perform(rq).
                 andExpect(status().isOk()).
                 andExpect(content().string("336"));
@@ -125,4 +126,51 @@ public class MathServiceTest {
         RequestBuilder rq4 = MockMvcRequestBuilders.delete(String.format("/math/volume/%d/%d/%d", 6,7,8));
         this.mvc.perform(rq1).andExpect(status().isOk()).andExpect(content().string("336"));
     }
+
+    @Test
+    public void testAreaOfCircle() throws Exception{
+        RequestBuilder rq = post("/math/area").
+                contentType(MediaType.APPLICATION_FORM_URLENCODED).
+                queryParam("type","circle").
+                queryParam("radius","4");
+        this.mvc.perform(rq).
+                andExpect(status().isOk()).
+                andExpect(content().string("Area of a circle with a radius of 4 is 50.265482"));
+    }
+
+    @Test
+    public void testMissingDataCirlce() throws Exception{
+        RequestBuilder rq = post("/math/area").
+                contentType(MediaType.APPLICATION_FORM_URLENCODED).
+                queryParam("type","circle").
+                queryParam("length","4");
+        this.mvc.perform(rq).
+                andExpect(status().isOk()).
+                andExpect(content().string("Invalid"));
+
+    }
+
+    @Test
+    public void testMissingDataRectangle() throws Exception{
+        RequestBuilder rq = post("/math/area").
+                contentType(MediaType.APPLICATION_FORM_URLENCODED).
+                queryParam("type","rectangle").
+                queryParam("width","4").
+                queryParam("height","7");
+        this.mvc.perform(rq).
+                andExpect(status().isOk()).
+                andExpect(content().string("Area of a 4x7 rectangle is 28"));
+    }
+    @Test
+    public void testAreaOfRectangle() throws Exception{
+        RequestBuilder rq = post("/math/area").
+                contentType(MediaType.APPLICATION_FORM_URLENCODED).
+                queryParam("type","rectangle").
+                queryParam("height","7");
+        this.mvc.perform(rq).
+                andExpect(status().isOk()).
+                andExpect(content().string("Invalid"));
+    }
+
+
 }
